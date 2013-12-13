@@ -7,9 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <DropboxSDK/DropboxSDK.h>
+#import "GalleryViewController.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@class GalleryViewController;
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UINavigationControllerDelegate>
 
-@property (strong, nonatomic) UIWindow *window;
+@property (nonatomic, strong) UIWindow *window;
+@property (nonatomic, strong) GalleryViewController *viewController;
+@property (nonatomic, strong) UINavigationController *navController;
+
 
 @end
