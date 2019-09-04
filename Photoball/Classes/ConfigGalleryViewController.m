@@ -21,8 +21,8 @@
 	CGSize size = image.size;
 	CGSize croppedSize;
 	CGFloat ratio = 256.f;
-	CGFloat offsetX = 0.f;
-	CGFloat offsetY = 0.f;
+	CGFloat offsetX = 0;
+	CGFloat offsetY = 0;
 	
 	// check the size of the image, we want to make it
 	// a square with sides the size of the smallest dimension
@@ -40,14 +40,14 @@
 	// Done cropping
 	
 	// Resize the image
-	CGRect rect = CGRectMake(0.0, 0.0, ratio, ratio);
+	CGRect rect = CGRectMake(0, 0, ratio, ratio);
 	
 	UIGraphicsBeginImageContext(rect.size);
 	[[UIImage imageWithCGImage:imageRef] drawInRect:rect];
 	UIImage *thumbnail = UIGraphicsGetImageFromCurrentImageContext();
 	UIGraphicsEndImageContext();
-	// Done Resizing
-    
+	
+    // Done Resizing
     UIImageView *imgView = [[UIImageView alloc] initWithImage:thumbnail];
     imgView.layer.cornerRadius = 20.f;
     imgView.layer.masksToBounds = YES;
@@ -69,14 +69,7 @@
     if (self)
     {
         self.title = @"Unnamed Gallery";
-        groupHeading = @[@"Gallery", @"Thumbnail Settings", @"Choose Photos"];
-        isTintingSupported = NO;
-        NSString *reqSysVer = @"6.0";
-        NSString *currSysVer = [[UIDevice currentDevice] systemVersion];
-        if ([currSysVer compare:reqSysVer options:NSNumericSearch] != NSOrderedAscending)
-        {
-            isTintingSupported = YES;
-        }
+        groupHeading = @[@"Gallery", @"Choose Photos"];
         gallery = [[PBGallery alloc] init];
         
         launchButton = [[UIBarButtonItem alloc]
@@ -92,7 +85,6 @@
         self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         self.tableView.rowHeight = 50;
         self.view.backgroundColor = [UIColor blackColor];
-
     }
     return self;
 }
@@ -122,8 +114,6 @@
         [interactiveViewController SetupImage:img.img withImageURL:img.imgURL];
     }
     
-    [interactiveViewController setThumbnailCount:thumbnailCountSlider.value];
-    [interactiveViewController setThumbnailSize:thumbnailSizeSlider.value];
     [self presentViewController:interactiveViewController animated:YES completion:^{
         [interactiveViewController Start];
     }];
@@ -135,12 +125,6 @@
     self.navigationController.navigationBarHidden = NO;
     self.navigationController.toolbarHidden = NO;
     launchButton.enabled = gallery.imageData.count ? YES : NO;
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 #pragma mark - Table view data source
@@ -158,7 +142,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    int static const sectionCount[3] = { 1, 2, 1 };
+    int static const sectionCount[2] = { 1, 1 };
     return sectionCount[section];
 }
 
@@ -167,8 +151,6 @@
     switch ([indexPath section])
     {
         case 1:
-            return 50;
-        case 2:
             return 48;
         default:
             return 46;
@@ -180,39 +162,15 @@
     static NSString *CellIdentifier = @"Cell";
     //NSInteger sectionRows = [tableView numberOfRowsInSection:[indexPath section]];
     NSInteger section = [indexPath section];
-    NSInteger row = [indexPath row];
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 
     if (cell == nil)
     {
-        if (section == 2)
+        if (section == 1)
         {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
                                            reuseIdentifier:CellIdentifier];
-        }
-        else if (section == 1)
-        {
-            cell = [[SliderTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-            SliderTableViewCell* sliderCell = (SliderTableViewCell*)cell;
-            if (row == 0)
-            {
-                thumbnailCountSlider = sliderCell.slider;
-                sliderCell.slider.minimumValue = 10;
-                sliderCell.slider.maximumValue = 200;
-                sliderCell.sliderValue = 200;
-                sliderCell.tag = 1;
-                sliderCell.descriptionLabel.text = @"Number of Thumbnails";
-            }
-            else if (row == 1)
-            {
-                thumbnailSizeSlider = sliderCell.slider;
-                sliderCell.slider.minimumValue = 20;
-                sliderCell.slider.maximumValue = 100;
-                sliderCell.sliderValue = 70;
-                sliderCell.tag = 2;
-                sliderCell.descriptionLabel.text = @"Size of Thumbnails";
-            }
         }
         else
         {
@@ -232,7 +190,7 @@
                 
                 UITextField *nameTextField = [[UITextField alloc] initWithFrame:CGRectMake(120, 12, 170, 30)];
                 nameTextField.adjustsFontSizeToFitWidth = NO;
-                nameTextField.textColor = [UIColor colorWithRed:0.206 green:0.291 blue:0.601 alpha:1.000];
+                nameTextField.textColor = [UIColor whiteColor];
                 nameTextField.placeholder = @"Unnamed Gallery";
                 nameTextField.keyboardType = UIKeyboardTypeDefault;
                 nameTextField.returnKeyType = UIReturnKeyDefault;
@@ -249,7 +207,7 @@
                 [cell.contentView addSubview:nameTextField];
             }
             break;
-            case 2:
+            case 1:
             {
                 choosePhotoCell = cell;
                 cell.textLabel.text = @"Select an Album";
@@ -304,7 +262,7 @@
 }
 
 // Saves the user name and score after the user enters it in the provided text field.
-- (void) textFieldDidEndEditing:(UITextField*)textField
+- (void)textFieldDidEndEditing:(UITextField*)textField
 {
     textField.userInteractionEnabled = NO;
     if ([textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0)
@@ -347,7 +305,7 @@
         textView.userInteractionEnabled = YES;
         [textView becomeFirstResponder];
     }
-    else if ([indexPath section] == 2)
+    else if ([indexPath section] == 1)
     {
         ELCAlbumPickerController *albumController = [[ELCAlbumPickerController alloc] initWithNibName:@"ELCAlbumPickerController" bundle:[NSBundle mainBundle]];
         [albumController setDelegate:self];

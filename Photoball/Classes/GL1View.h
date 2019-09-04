@@ -16,15 +16,6 @@
 
 #define FIELD_OF_VIEW 45.f
 
-@interface PhotoRect : NSObject
-{
-@public
-    int textureIndex;
-    GLKVector3 pt;
-    GLKVector2 angle;
-}
-@end
-
 @interface GL1View : EAGLView
 {
     GLuint					texture[512];
@@ -34,12 +25,10 @@
     NSTimer               *renderTimer;
     GLfloat                     azimuth, elevation, azmDelt, elvDelt, lastAzimuth, lastElevation;
     GLfloat                     pinchDistance;
-    GLfloat                       screenSize[2];
-    GLfloat                       _itemWidth;
-    GLfloat                       _itemHeight;
+    GLfloat                       _tileSize;
     GLfloat                       _verticalPadding;
     GLfloat                       _horizontalPadding;
-    int                         numberOfRectangles;
+    int                         _numberOfRectangles;
     GLfloat                   targetAzimuth;
     GLfloat                   targetElevation;
     GLfloat                   startAzimuth;
@@ -51,16 +40,6 @@
     GLfloat                   deltaCameraZ;
     GLfloat                   deltaCameraY;
     GLfloat                   sliderX;
-    
-    BOOL                isFocusing;
-    BOOL                isFocused;
-    BOOL                isImageShowing;
-    BOOL                isTouchingInterface;
-    BOOL                isHUDShowing;
-    CGRect              focusRect;
-    
-    uint32_t                     focusingTime;
-    uint32_t                     focusDuration;
     
     GLfloat					mat_projection[16];
 	GLfloat					mat_modelview[16];

@@ -7,6 +7,7 @@
 //
 
 #import "GL1View.h"
+#import "Common.h"
 
 @implementation PhotoRect
 
@@ -18,129 +19,45 @@
     GLfloat _camDistance;
     GLfloat _sphereRadius;
     NSUInteger _numberOfImages;
+    CGSize _screenSize;
+    short _scale;
+    BOOL                isZooming;
+    BOOL                isFocusing;
+    BOOL                isFocused;
+    BOOL                isImageShowing;
+    BOOL                isTouchingInterface;
+    BOOL                isHUDShowing;
+    CGRect              focusRect;
+    uint32_t            focusingTime;
+    uint32_t            focusDuration;
 }
 
 @end
 
 @implementation GL1View
 
-//Smoothing. Lower number is Smoother. 1.0 is no smoothing
-float const static kSmoothGyro = 0.15f;
-
-static
-GLKQuaternion LPFilterQuaternion(const GLKQuaternion smoothVal, const GLKQuaternion rawVal, const double smoothFactor)
-{
-    return GLKQuaternionMake( rawVal.x*smoothFactor + smoothVal.x*(1.0-smoothFactor),
-                             rawVal.y*smoothFactor + smoothVal.y*(1.0-smoothFactor),
-                             rawVal.z*smoothFactor + smoothVal.z*(1.0-smoothFactor),
-                             rawVal.w*smoothFactor + smoothVal.w*(1.0-smoothFactor));
-}
-// t: current time, b: start value, c: change in value, d: duration
-static float EaseInOutCubic(float t, float const b, float const c, float const d)
-{
-	if ((t/=d/2) < 1)
-    {
-        return c/2*t*t*t + b;
-    }
-    else
-    {
-        t-=2;
-        return c/2*(t*t*t + 2) + b;
-    }
-}
-
-static float
-angle_diff(float a1, float a2)
-{
-    return fmodf((fmodf((a1 - a2), 2.f*M_PI) + 3.f*M_PI), 2.f*M_PI) - M_PI;
-}
-static NSComparisonResult compareObjects(id obj1, id obj2, void* context) {
-	int value1 = ((PhotoRect*)obj1)->textureIndex;
-    int value2 = ((PhotoRect*)obj2)->textureIndex;
-	if (value1 < value2) return NSOrderedAscending;
-	if (value1 > value2) return NSOrderedDescending;
-	return NSOrderedSame;
-}
-
-static
-void __gluMultMatrixVecd(const float matrix[16], const double in[4], double out[4])
-{
-	int i;
-	
-	for (i=0; i<4; i++) {
-		out[i] =
-		in[0] * matrix[0*4+i] +
-		in[1] * matrix[1*4+i] +
-		in[2] * matrix[2*4+i] +
-		in[3] * matrix[3*4+i];
-	}
-}
-
-static
-int gluProject(const GLKVector3 obj,
-               const GLfloat modelMatrix[16],
-               const GLfloat projMatrix[16],
-               const int viewport[4],
-               GLKVector3* win)
-{
-	double in[4];
-	double out[4];
-	
-	in[0]=obj.x;
-	in[1]=obj.y;
-	in[2]=obj.z;
-	in[3]=1.0;
-    // multiply vector by modelview and projection matrix
-	__gluMultMatrixVecd(modelMatrix, in, out);
-	__gluMultMatrixVecd(projMatrix, out, in);
-	if (in[3] == 0.0)
-		return(0);
-    
-    // normalize vector
-	in[0] /= in[3];
-	in[1] /= in[3];
-	in[2] /= in[3];
-	/* Map x, y and z to range 0-1 */
-	in[0] = in[0] * 0.5 + 0.5;
-	in[1] = in[1] * 0.5 + 0.5;
-	in[2] = in[2] * 0.5 + 0.5;
-	
-	/* Map x,y to viewport */
-	in[0] = in[0] * viewport[2] + viewport[0];
-	in[1] = in[1] * viewport[3] + viewport[1];
-	
-	win->x = in[0];
-	win->y = in[1];
-	win->z=in[2];
-	
-	return(1);
-}
-
-
 - (void)setThumbnailSize:(int)size
 {
-    _itemWidth = _itemHeight = size;
+    _tileSize = size;
 }
 
 - (void)setThumbnailCount:(int)count
 {
-    numberOfRectangles = count;
+    _numberOfRectangles = count;
 }
 
 - (id)initWithFrame:(CGRect)frame
 {
 	if((self = [super initWithFrame:frame pixelFormat:GL_RGB565_OES depthFormat:GL_DEPTH_COMPONENT16_OES preserveBackbuffer:NO]))
 	{
-        GLubyte scale = [[UIScreen mainScreen] scale];
+        _scale = [[UIScreen mainScreen] scale];
+        _screenSize = CGSizeMake(frame.size.width*_scale, frame.size.height*_scale);
         [self setMultipleTouchEnabled:YES];
-        screenRect = CGRectMake(0, 0, frame.size.width*scale, frame.size.height*scale);
-        screenSize[0] = screenRect.size.width;
-        screenSize[1] = screenRect.size.height;
+        screenRect = CGRectMake(0, 0, frame.size.width*_scale, frame.size.height*_scale);
         animationFrameInterval = 1;
-        numberOfRectangles = 200;
+        _numberOfRectangles = 200;
         _numberOfImages = 0;
-        _itemWidth = 70;
-        _itemHeight = 70;
+        _tileSize = 70;
         _verticalPadding = 0;
         _horizontalPadding = 0;
         azimuth = 0.f;
@@ -156,6 +73,7 @@ int gluProject(const GLKVector3 obj,
         targetCameraY = 0;
         targetCameraZ = -1.4f;
         isFocusing = NO;
+        isZooming = NO;
         focusingTime = 0;
         focusDuration = 120;
         isHUDShowing = NO;
@@ -172,10 +90,6 @@ int gluProject(const GLKVector3 obj,
         imgView = [[UIImageView alloc] initWithFrame:frame];
         imgView.backgroundColor = [UIColor blackColor];
         
-        //testSlider = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"slider.png"]];
-        //[self addSubview:testSlider];
-        //testSlider.frame = CGRectMake(0, 400, testSlider.frame.size.width, testSlider.frame.size.height);
-        
         // Create map to associate touch-events with views.
         touchMap = CFDictionaryCreateMutable(NULL, // use the default allocator
                                              0,		// unlimited size
@@ -187,14 +101,10 @@ int gluProject(const GLKVector3 obj,
         // find the cross product of one triangle, and use that to store a normal vector
         // which we will use for pushing the tiles outward from the sphere
 
-        photoTexCoord[0] = 1;
-        photoTexCoord[1] = 0;
-        photoTexCoord[2] = 0;
-        photoTexCoord[3] = 0;
-        photoTexCoord[4] = 1;
-        photoTexCoord[5] = 1;
-        photoTexCoord[6] = 0;
-        photoTexCoord[7] = 1;
+        photoTexCoord[0] = 0;   photoTexCoord[1] = 0;
+        photoTexCoord[2] = 1;   photoTexCoord[3] = 0;
+        photoTexCoord[4] = 0;   photoTexCoord[5] = 1;
+        photoTexCoord[6] = 1;   photoTexCoord[7] = 1;
         
         photoRect = [[NSMutableArray alloc] initWithCapacity:100];
         
@@ -203,15 +113,6 @@ int gluProject(const GLKVector3 obj,
         [self setupGL];
         [self InitializeCamera];
         
-        /*
-        motionManager = [[CMMotionManager alloc] init];
-        bHasGyro = motionManager.isGyroAvailable;
-        
-        motionManager.showsDeviceMovementDisplay = YES;
-        motionManager.deviceMotionUpdateInterval = 1.0 / 60.0;
-        [motionManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryZVertical];
-         */
-        
         /* initialize random seed: */
         srand ( (unsigned int)time(NULL) );
         
@@ -219,100 +120,86 @@ int gluProject(const GLKVector3 obj,
     return self;
 }
 
-GLKVector3 rotatePointXZ(GLKVector3 pt, double t)
-{
-    GLKVector3 newPt;
-    
-    newPt.x = pt.x*cos(t) - pt.z*sin(t);
-    newPt.z = pt.x*sin(t) + pt.z*cos(t);
-    newPt.y = pt.y;
-    
-    return newPt;
-}
-
-GLKVector3 rotatePointZY(GLKVector3 pt, double p)
-{
-    GLKVector3 newPt;
-    
-    newPt.z = pt.z*cos(p) - pt.y*sin(p);
-    newPt.y = pt.z*sin(p) + pt.y*cos(p);
-    newPt.x = pt.x;
-    
-    return newPt;
-}
-
-- (void) CreateSpherePoints
-{
-    PhotoRect *rect;
+- (void) CreateSpherePoints {
     [photoRect removeAllObjects];
     NSUInteger numberOfImages = imageURL.count;
     
-    GLfloat scaleFactor = 0.00118f;
-    GLfloat itemWidth = _itemWidth * scaleFactor;
-    GLfloat itemHeight = _itemHeight * scaleFactor;
+    GLfloat const scaleFactor = 0.00118f;
+    GLfloat const tileSize = _tileSize * scaleFactor;
 
-    double width = itemWidth + _horizontalPadding;
-    double height = itemHeight + _verticalPadding;
-    double flat_surface_area = (numberOfRectangles + 2) * width * height;
-    _sphereRadius = sqrt(flat_surface_area / (4.0 * M_PI));
-    double rowAngle = 2.0 * atan(((height / 2.0) / _sphereRadius));
-    int numRows = floor(M_PI / rowAngle);
-    rowAngle = rowAngle + (M_PI - rowAngle * numRows) / numRows;
+    double const width = tileSize + _horizontalPadding;
+    double const flat_surface_area = (_numberOfRectangles + 2.0) * width * width;
+    _sphereRadius = sqrt(flat_surface_area / (4.0*M_PI));
     
-    for (int i = 1; i < numRows; ++i)
+    double columnAngle = atan2(width/2.0, _sphereRadius) * 2.0;
+    int const numColumns = floor(M_PI / columnAngle);
+    columnAngle = columnAngle + (M_PI - columnAngle * numColumns) / numColumns;
+    
+    for (int i = 1; i < numColumns; ++i)
     {
         // Calculate the radius of the circle of latitude for the row.
-        double latitudeRadius = _sphereRadius * cos(M_PI/2.0 - rowAngle*i);
-        // Calculate the angle between columns.
-        double columnAngle = atan((width/2.0 / latitudeRadius)) * 2.0;
+        double longitudeRadius = _sphereRadius * cos(M_PI_2 - columnAngle*i);
+        // Calculate the angle between rows.
+        double rowAngle = atan2(width/2.0, longitudeRadius) * 2.0;
         // Calculate the number of colums.
-        int numColumns = floor((2.0*M_PI) / columnAngle);
+        int numRows = floor((2.0*M_PI) / rowAngle);
         // Because step one is an approximation, the number of columns will not fit perfectly, so for presentation add padding to columnAngle.
-        columnAngle += (2.0*M_PI - columnAngle * numColumns) / numColumns;
-        // For each j in columns, translate -radius along the Z axis, rotate π / 2 + rowAngle * i around the X axis, and rotate columnAngle * j around the Y axis.
-        for (int j = 0; j < numColumns; ++j)
-        {
-            rect = [[PhotoRect alloc] init];
-            // For each j in columns, translate -radius along the Z axis, rotate π / 2 + rowAngle * i around the X axis, and rotate columnAngle * j around the Y axis.
-            double theta = columnAngle * j;
-            double phi = rowAngle * i;
-            rect->angle = GLKVector2Make((GLKMathRadiansToDegrees(-theta) + 90.f), (GLKMathRadiansToDegrees(phi) + 90.f));
-            double x = cos(theta) * sin(phi);
-            double y = cos(phi);
-            double z = sin(theta) * sin(phi);
-            
-            NSUInteger index = photoRect.count * 4;
-            
-            photoVertex[0 + index].x = itemWidth;
-            photoVertex[0 + index].y = -itemHeight;
-            
-            photoVertex[1 + index].x = -itemWidth;
-            photoVertex[1 + index].y = -itemHeight;
-            
-            photoVertex[2 + index].x = itemWidth;
-            photoVertex[2 + index].y = itemHeight;
+        rowAngle += (2.0*M_PI - rowAngle * numRows) / numRows;
         
-            photoVertex[3 + index].x = -itemWidth;
-            photoVertex[3 + index].y = itemHeight;
+        // For each j in columns, translate -radius along the Z axis, rotate π / 2 + rowAngle * i around the X axis, and rotate columnAngle * j around the Y axis.
+        for (int j = 0; j < numRows; ++j)
+        {
+            PhotoRect *rect = [[PhotoRect alloc] init];
+            // For each j in columns, translate -radius along the Z axis, rotate π / 2 + rowAngle * i around the X axis, and rotate columnAngle * j around the Y axis.
+            double theta = rowAngle * j;
+            double phi = columnAngle * i;
+            double const x = cos(theta) * sin(phi);
+            double const y = cos(phi);
+            double const z = sin(theta) * sin(phi);
+            GLKVector3 v = GLKVector3Make(x, y, z);
             
-            // rotate around the x axis
-            photoVertex[0 + index] = rotatePointZY(photoVertex[0 + index], phi + M_PI_2);
-            photoVertex[1 + index] = rotatePointZY(photoVertex[1 + index], phi + M_PI_2);
-            photoVertex[2 + index] = rotatePointZY(photoVertex[2 + index], phi + M_PI_2);
-            photoVertex[3 + index] = rotatePointZY(photoVertex[3 + index], phi + M_PI_2);
+            rect->angle = GLKVector2Make((GLKMathRadiansToDegrees(-theta) + 90.f), (GLKMathRadiansToDegrees(phi) + 90.f));
+            rect->tileIndex = (int)photoRect.count;
+            rect->textureIndex = (i*numRows + j) % numberOfImages;
             
-            // rotate around the y axis (y is what we think of z: pointing into screen)
-            photoVertex[0 + index] = rotatePointXZ(photoVertex[0 + index], theta + M_PI_2);
-            photoVertex[1 + index] = rotatePointXZ(photoVertex[1 + index], theta + M_PI_2);
-            photoVertex[2 + index] = rotatePointXZ(photoVertex[2 + index], theta + M_PI_2);
-            photoVertex[3 + index] = rotatePointXZ(photoVertex[3 + index], theta + M_PI_2);
+            int const index = (int)photoRect.count * 4;
             
-            photoVertex[0 + index] = GLKVector3Add(photoVertex[0 + index], GLKVector3Make(x, y, z));
-            photoVertex[1 + index] = GLKVector3Add(photoVertex[1 + index], GLKVector3Make(x, y, z));
-            photoVertex[2 + index] = GLKVector3Add(photoVertex[2 + index], GLKVector3Make(x, y, z));
-            photoVertex[3 + index] = GLKVector3Add(photoVertex[3 + index], GLKVector3Make(x, y, z));
+            // set basic dimensions for photo
+            photoVertex[0 + index] = GLKVector3Make(tileSize, -tileSize, 0.f);
+            photoVertex[1 + index] = GLKVector3Make(-tileSize, -tileSize, 0.f);
+            photoVertex[2 + index] = GLKVector3Make(tileSize, tileSize, 0.f);
+            photoVertex[3 + index] = GLKVector3Make(-tileSize, tileSize, 0.f);
+        
+            // increment angles
+            phi += M_PI_2;
+            theta += M_PI_2;
             
-            rect->textureIndex = (i + j) % numberOfImages;
+            float const cos_phi = cos(phi);
+            float const sin_phi = sin(phi);
+            float const cos_theta = cos(theta);
+            float const sin_theta = sin(theta);
+            
+            // construct rotation matrices
+            GLKMatrix3 rotationZY = GLKMatrix3Make(1.f, 0, 0,
+                                                   0, cos_phi, -sin_phi,
+                                                   0, sin_phi, cos_phi);
+            
+            GLKMatrix3 rotationXZ = GLKMatrix3Make(cos_theta, 0, sin_theta,
+                                                   0, 1.f, 0,
+                                                   -sin_theta, 0, cos_theta);
+            
+            GLKMatrix3 rotationTotal = GLKMatrix3Multiply(rotationXZ, rotationZY);
+            
+            photoVertex[0 + index] = GLKMatrix3MultiplyVector3(rotationTotal, photoVertex[0 + index]);
+            photoVertex[1 + index] = GLKMatrix3MultiplyVector3(rotationTotal, photoVertex[1 + index]);
+            photoVertex[2 + index] = GLKMatrix3MultiplyVector3(rotationTotal, photoVertex[2 + index]);
+            photoVertex[3 + index] = GLKMatrix3MultiplyVector3(rotationTotal, photoVertex[3 + index]);
+            
+            photoVertex[0 + index] = GLKVector3Add(photoVertex[0 + index], v);
+            photoVertex[1 + index] = GLKVector3Add(photoVertex[1 + index], v);
+            photoVertex[2 + index] = GLKVector3Add(photoVertex[2 + index], v);
+            photoVertex[3 + index] = GLKVector3Add(photoVertex[3 + index], v);
+            
             [photoRect addObject:rect];
         }
     }
@@ -320,22 +207,6 @@ GLKVector3 rotatePointZY(GLKVector3 pt, double p)
     // sort by texture index to decrease the number of texture binds when drawing
     [photoRect sortUsingFunction:compareObjects context:NULL];
 }
-
-//Calculate the Elevation and Azimuth angles
-- (void) CalcElevationAzimuth
-{
-    if (bHasGyro)
-    {
-        CMDeviceMotion *d = motionManager.deviceMotion;
-        CMQuaternion quat = d.attitude.quaternion;
-        GLKQuaternion gyroQuat = GLKQuaternionMake(quat.x, quat.y, quat.z, quat.w);
-        smGyroQuat = LPFilterQuaternion(smGyroQuat, gyroQuat, kSmoothGyro);
-        GLKQuaternion qInverse = GLKQuaternionInvert(smGyroQuat);
-        worldMatrix = GLKMatrix4MakeWithQuaternion(qInverse);
-        worldMatrix.m[14] = zoomFactor;
-    }
-}
-
 
 - (void) ShowSelectedImage
 {
@@ -377,11 +248,15 @@ GLKVector3 rotatePointZY(GLKVector3 pt, double p)
         _camPosition.y = EaseInOutCubic(focusingTime, startCameraY, deltaCameraY, focusDuration);
         _camPosition.z = EaseInOutCubic(focusingTime, startCameraZ, deltaCameraZ, focusDuration);
         focusingTime++;
+        
+        azimuth = normalize_angle(azimuth);
+        elevation = normalize_angle(elevation);
     }
     else
     {
         // we have arrived
         isFocusing = NO;
+        isZooming = YES;
         isFocused = YES;
     }
 }
@@ -440,6 +315,9 @@ GLKVector3 rotatePointZY(GLKVector3 pt, double p)
         elvDelt = (elevation - lastElevation);
     }
     
+    azimuth = normalize_angle(azimuth);
+    elevation = normalize_angle(elevation);
+    
     lastAzimuth  = azimuth;
     lastElevation = elevation;
     
@@ -453,11 +331,10 @@ GLKVector3 rotatePointZY(GLKVector3 pt, double p)
         coasting = NO;
     }
     
-    //[self CalcElevationAzimuth];
-    
-    if (isFocusing)
-    {
+    if (isFocusing) {
         [self FocusPhoto];
+    } else if (isZooming) {
+        
     }
     [self DrawPhotoBall];
 }
@@ -584,28 +461,102 @@ GLKVector3 rotatePointZY(GLKVector3 pt, double p)
 	return vec;
 }
 
-- (void) Pick:(CGPoint)touchPt
+- (PhotoRect*)GetRectFromIndex:(int)index
 {
-    GLKVector3 windowPos = GLKVector3Make(0, 0, 0);
-    glGetFloatv(GL_MODELVIEW_MATRIX, mat_modelview);		//Get the current Transformation Matrix
-    float greatestZ = 10;
-    selectedImage = -1;
-    for (int i = 0; i < photoRect.count; ++i)
+    if (photoRect.count == 0) return nil;
+    
+    PhotoRect *tile = nil;
+    for (int i = (int)photoRect.count - 1; i >= 0; --i)
     {
-        PhotoRect *prect = [photoRect objectAtIndex:i];
-        gluProject(prect->pt, mat_modelview, mat_projection, mat_viewport, &windowPos );
-        CGRect rect = CGRectMake(windowPos.x - 20.f, screenSize[1] - windowPos.y - 20.f, 40.f, 40.f);
-        if (CGRectContainsPoint(rect, touchPt))
+        tile = [photoRect objectAtIndex:i];
+        if (tile->tileIndex == index)
         {
-            // use z-sorting to determine which rect is closest
-            if (windowPos.z < greatestZ)
-            {
-                selectedImage = i;
-                greatestZ = windowPos.z;
-            }
+            return [photoRect objectAtIndex:i];
         }
     }
-    if (selectedImage >= 0)
+    
+    return nil;
+}
+
+GLKVector3 getNormal(GLKVector3 a, GLKVector3 b, GLKVector3 c)
+{
+    GLKVector3 ab = GLKVector3Subtract(b, a);
+    GLKVector3 ac = GLKVector3Subtract(c, a);
+    GLKVector3 n = GLKVector3CrossProduct(ab, ac);
+    
+    return n;
+}
+
+- (void) Pick:(CGPoint)touchPt
+{
+    GLKVector3 objPosP = GLKVector3Make(0, 0, 0);
+    GLKVector3 objPosQ = GLKVector3Make(0, 0, 0);
+    glGetFloatv(GL_MODELVIEW_MATRIX, mat_modelview);		//Get the current Transformation Matrix
+    selectedImage = -1;
+    
+    CGPoint screenXY = CGPointMake(touchPt.x, _screenSize.height - touchPt.y);
+    
+    // TODO: Add a check that determines if we're inside the globe, and if so, only check the inner tiles
+    glhUnProjectf(screenXY.x, screenXY.y, 1.f, mat_modelview, mat_projection, mat_viewport, &objPosP);  // Ray start
+    glhUnProjectf(screenXY.x, screenXY.y, 0.f, mat_modelview, mat_projection, mat_viewport, &objPosQ);  // Ray end
+    
+    
+    // if we are inside the sphere, check the inner tiles only
+    int i = 0;
+    int index = 0;
+    _camDistance = GLKVector3Length(_camPosition);
+    // Check the outer tiles first
+    if (_camDistance > _sphereRadius)
+    {
+        for (i = 0; i < photoRect.count; ++i)
+        {
+            if (IntersectSegmentTriangle(objPosP, objPosQ, photoVertex[index+0], photoVertex[index+1], photoVertex[index+2]) ||
+                IntersectSegmentTriangle(objPosP, objPosQ, photoVertex[index+1], photoVertex[index+3], photoVertex[index+2]))
+            {
+                GLKVector3 n = getNormal(photoVertex[index+0], photoVertex[index+1], photoVertex[index+2]);
+                n = GLKVector3Normalize(n);
+                n = GLKVector3MultiplyScalar(n, -0.05f);   // negative sign projects outward, positive goes inward
+                photoVertex[index+0] = GLKVector3Add(n, photoVertex[index+0]);
+                photoVertex[index+1] = GLKVector3Add(n, photoVertex[index+1]);
+                photoVertex[index+2] = GLKVector3Add(n, photoVertex[index+2]);
+                photoVertex[index+3] = GLKVector3Add(n, photoVertex[index+3]);
+                
+                selectedImage = index/4;
+                break;
+            }
+            index += 4;
+        }
+    }
+    
+    // if no outer tiles were selected, look to see if an inner tile was touched
+    if (selectedImage == -1)
+    {
+        glhUnProjectf(screenXY.x, screenXY.y, 0.f, mat_modelview, mat_projection, mat_viewport, &objPosP);  // Ray start
+        glhUnProjectf(screenXY.x, screenXY.y, 1.f, mat_modelview, mat_projection, mat_viewport, &objPosQ);  // Ray end
+        
+        i = 0;
+        index = 0;
+        for (i = 0; i < photoRect.count; ++i)
+        {
+            if (IntersectSegmentTriangle(objPosP, objPosQ, photoVertex[index+0], photoVertex[index+1], photoVertex[index+2]) ||
+                IntersectSegmentTriangle(objPosP, objPosQ, photoVertex[index+1], photoVertex[index+3], photoVertex[index+2]))
+            {
+                GLKVector3 n = getNormal(photoVertex[index+0], photoVertex[index+1], photoVertex[index+2]);
+                n = GLKVector3Normalize(n);
+                n = GLKVector3MultiplyScalar(n, 0.05f);   // negative sign projects outward, positive goes inward
+                photoVertex[index+0] = GLKVector3Add(n, photoVertex[index+0]);
+                photoVertex[index+1] = GLKVector3Add(n, photoVertex[index+1]);
+                photoVertex[index+2] = GLKVector3Add(n, photoVertex[index+2]);
+                photoVertex[index+3] = GLKVector3Add(n, photoVertex[index+3]);
+                
+                selectedImage = index/4;
+                break;
+            }
+            index += 4;
+        }
+    }
+    
+    if (selectedImage > -1)
     {
         azmDelt = 0;
         elvDelt = 0;
@@ -613,17 +564,26 @@ GLKVector3 rotatePointZY(GLKVector3 pt, double p)
         startElevation = elevation;
         startCameraZ = _camPosition.z;
         startCameraY = _camPosition.y;
-        PhotoRect *prect = [photoRect objectAtIndex:selectedImage];
+        PhotoRect *prect = [self GetRectFromIndex:i];
         targetAzimuth = -prect->angle.x;
         targetElevation = -prect->angle.y - 180.f;
+        targetAzimuth = normalize_angle(targetAzimuth);
+        targetElevation = normalize_angle(targetElevation);
+        
+        // calculate the difference between the two angles
         targetAzimuth = angle_diff(GLKMathDegreesToRadians(targetAzimuth), GLKMathDegreesToRadians(azimuth));
-        targetAzimuth = GLKMathRadiansToDegrees(targetAzimuth);
         targetElevation = angle_diff(GLKMathDegreesToRadians(targetElevation), GLKMathDegreesToRadians(elevation));
+        // convert back to degrees
+        targetAzimuth = GLKMathRadiansToDegrees(targetAzimuth);
         targetElevation = GLKMathRadiansToDegrees(targetElevation);
+        
         deltaCameraY = targetCameraY - _camPosition.y;
         deltaCameraZ = targetCameraZ - _camPosition.z;
+        
         isFocusing = YES;
         focusingTime = 0;
+        
+        // set the duration based on the amount of rotation we're doing
         float deltaAngle = sqrtf(powf(targetAzimuth, 2) + powf(targetElevation, 2));
         if (deltaAngle > 100.f)
         {
@@ -767,17 +727,18 @@ GLKVector3 rotatePointZY(GLKVector3 pt, double p)
         }
         return;
     }
-    
+
     NSUInteger totalTouches = CFDictionaryGetCount(touchMap);
     
     for (UITouch *touch in touches)
     {
         if( !isImageShowing && !touchMoved && (totalTouches == 1) )
         {
+            CGPoint pt = [touch locationInView:self];
             Vector2 *touchPointA = [self touchPointOGL:touch];
             if (isFocused)
             {
-                if (CGRectContainsPoint(focusRect, CGPointMake(touchPointA.x, touchPointA.y)))
+                if (CGRectContainsPoint(focusRect, pt))
                 {
                     [self ShowSelectedImage];
                 }
@@ -804,12 +765,6 @@ GLKVector3 rotatePointZY(GLKVector3 pt, double p)
         stopping    = NO;
     }
 }
-
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
-{
-	[self touchesEnded:touches withEvent:event];
-}
-
 
 - (void) dealloc
 {

@@ -7,7 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CD48826B184D907800EBDC35 /* DropboxSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD48826A184D907800EBDC35 /* DropboxSDK.framework */; };
+		CD27D2B818984E4E005EAC74 /* Common.m in Sources */ = {isa = PBXBuildFile; fileRef = CD27D2B718984E4E005EAC74 /* Common.m */; };
+		CD569B5C1B11474900D966EF /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD569B591B11474900D966EF /* FBSDKCoreKit.framework */; };
+		CD569B5D1B11474900D966EF /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD569B5A1B11474900D966EF /* FBSDKLoginKit.framework */; };
+		CD569B5E1B11474900D966EF /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD569B5B1B11474900D966EF /* FBSDKShareKit.framework */; };
+		CD62E11E19F999DA0071F674 /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CD62E11A19F999DA0071F674 /* libTestFlight.a */; };
+		CD62E12219FAF30D0071F674 /* SliderTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CD62E12119FAF30D0071F674 /* SliderTableViewCell.m */; };
 		CD65A20418467431000E9048 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD65A20318467431000E9048 /* Foundation.framework */; };
 		CD65A20618467431000E9048 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD65A20518467431000E9048 /* CoreGraphics.framework */; };
 		CD65A20818467431000E9048 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD65A20718467431000E9048 /* UIKit.framework */; };
@@ -15,7 +20,6 @@
 		CD65A21018467431000E9048 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CD65A20F18467431000E9048 /* main.m */; };
 		CD65A21418467431000E9048 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CD65A21318467431000E9048 /* AppDelegate.m */; };
 		CD65A21618467431000E9048 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD65A21518467431000E9048 /* Images.xcassets */; };
-		CD65A21D18467431000E9048 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD65A21C18467431000E9048 /* XCTest.framework */; };
 		CD65A21E18467431000E9048 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD65A20318467431000E9048 /* Foundation.framework */; };
 		CD65A21F18467431000E9048 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD65A20718467431000E9048 /* UIKit.framework */; };
 		CD65A22718467431000E9048 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CD65A22518467431000E9048 /* InfoPlist.strings */; };
@@ -52,7 +56,6 @@
 		CD65A29A1846748F000E9048 /* PBGalleryDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = CD65A2611846748F000E9048 /* PBGalleryDatabase.m */; };
 		CD65A29B1846748F000E9048 /* PBImage.m in Sources */ = {isa = PBXBuildFile; fileRef = CD65A2631846748F000E9048 /* PBImage.m */; };
 		CD65A29D1846748F000E9048 /* slider.png in Resources */ = {isa = PBXBuildFile; fileRef = CD65A2661846748F000E9048 /* slider.png */; };
-		CD65A29E1846748F000E9048 /* SliderTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CD65A2681846748F000E9048 /* SliderTableViewCell.m */; };
 		CD65A2A21846748F000E9048 /* Vector2.m in Sources */ = {isa = PBXBuildFile; fileRef = CD65A26F1846748F000E9048 /* Vector2.m */; };
 		CD65A2A31846748F000E9048 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CD65A2701846748F000E9048 /* Default-568h@2x.png */; };
 		CD65A2A41846748F000E9048 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = CD65A2711846748F000E9048 /* Default.png */; };
@@ -62,11 +65,14 @@
 		CD65A2A91846748F000E9048 /* MExtendedTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CD65A2781846748F000E9048 /* MExtendedTableView.m */; };
 		CD65A2AB1846748F000E9048 /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = CD65A27C1846748F000E9048 /* SVProgressHUD.bundle */; };
 		CD65A2AC1846748F000E9048 /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = CD65A27E1846748F000E9048 /* SVProgressHUD.m */; };
+		CD705C2A1A08BEE1004FCC54 /* globe.png in Resources */ = {isa = PBXBuildFile; fileRef = CD705C291A08BEE1004FCC54 /* globe.png */; };
+		CD705C2C1A08BF91004FCC54 /* SimpleVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = CD705C2B1A08BF91004FCC54 /* SimpleVertex.glsl */; };
+		CD705C2E1A08BFC0004FCC54 /* SimpleFragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = CD705C2D1A08BFC0004FCC54 /* SimpleFragment.glsl */; };
+		CD705C311A08C10D004FCC54 /* PhotoBallViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD705C301A08C10D004FCC54 /* PhotoBallViewController.m */; };
 		CDD91030184FD5FD000A5D6E /* OpenSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CDD9102C184FD5FD000A5D6E /* OpenSans-Light.ttf */; };
 		CDD91031184FD5FD000A5D6E /* OpenSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CDD9102D184FD5FD000A5D6E /* OpenSans-Regular.ttf */; };
 		CDD91032184FD5FD000A5D6E /* OpenSans.fnt in Resources */ = {isa = PBXBuildFile; fileRef = CDD9102E184FD5FD000A5D6E /* OpenSans.fnt */; };
 		CDD91033184FD5FD000A5D6E /* OpenSans@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CDD9102F184FD5FD000A5D6E /* OpenSans@2x.png */; };
-		CDD91035184FD74C000A5D6E /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDD91034184FD74C000A5D6E /* FacebookSDK.framework */; };
 		CDFB4F2E1850FCFF00C60084 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDFB4F2D1850FCFF00C60084 /* GLKit.framework */; };
 		CDFB4F2F1850FD1000C60084 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD65A2331846745D000E9048 /* OpenGLES.framework */; };
 /* End PBXBuildFile section */
@@ -82,7 +88,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		CD48826A184D907800EBDC35 /* DropboxSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DropboxSDK.framework; sourceTree = "<group>"; };
+		CD27D2B618984E23005EAC74 /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Common.h; path = PhotoBall/Classes/Common.h; sourceTree = SOURCE_ROOT; };
+		CD27D2B718984E4E005EAC74 /* Common.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Common.m; path = PhotoBall/Classes/Common.m; sourceTree = SOURCE_ROOT; };
+		CD569B591B11474900D966EF /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		CD569B5A1B11474900D966EF /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = ../../FacebookSDK/FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		CD569B5B1B11474900D966EF /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = ../../FacebookSDK/FBSDKShareKit.framework; sourceTree = "<group>"; };
+		CD62E11A19F999DA0071F674 /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
+		CD62E12019FAF30D0071F674 /* SliderTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SliderTableViewCell.h; sourceTree = "<group>"; };
+		CD62E12119FAF30D0071F674 /* SliderTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SliderTableViewCell.m; sourceTree = "<group>"; };
 		CD65A20018467431000E9048 /* Photoball.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Photoball.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD65A20318467431000E9048 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		CD65A20518467431000E9048 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -95,7 +108,6 @@
 		CD65A21318467431000E9048 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		CD65A21518467431000E9048 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		CD65A21B18467431000E9048 /* PhotoballTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhotoballTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		CD65A21C18467431000E9048 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		CD65A22418467431000E9048 /* PhotoballTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PhotoballTests-Info.plist"; sourceTree = "<group>"; };
 		CD65A22618467431000E9048 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CD65A22818467431000E9048 /* PhotoballTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhotoballTests.m; sourceTree = "<group>"; };
@@ -144,8 +156,6 @@
 		CD65A2621846748F000E9048 /* PBImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBImage.h; sourceTree = "<group>"; };
 		CD65A2631846748F000E9048 /* PBImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBImage.m; sourceTree = "<group>"; };
 		CD65A2661846748F000E9048 /* slider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = slider.png; path = ../slider.png; sourceTree = "<group>"; };
-		CD65A2671846748F000E9048 /* SliderTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SliderTableViewCell.h; sourceTree = "<group>"; };
-		CD65A2681846748F000E9048 /* SliderTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SliderTableViewCell.m; sourceTree = "<group>"; };
 		CD65A26E1846748F000E9048 /* Vector2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vector2.h; sourceTree = "<group>"; };
 		CD65A26F1846748F000E9048 /* Vector2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Vector2.m; sourceTree = "<group>"; };
 		CD65A2701846748F000E9048 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../../Default-568h@2x.png"; sourceTree = "<group>"; };
@@ -159,11 +169,15 @@
 		CD65A27C1846748F000E9048 /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVProgressHUD.bundle; sourceTree = "<group>"; };
 		CD65A27D1846748F000E9048 /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
 		CD65A27E1846748F000E9048 /* SVProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVProgressHUD.m; sourceTree = "<group>"; };
+		CD705C291A08BEE1004FCC54 /* globe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = globe.png; sourceTree = "<group>"; };
+		CD705C2B1A08BF91004FCC54 /* SimpleVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SimpleVertex.glsl; path = PhotoBall/SimpleVertex.glsl; sourceTree = SOURCE_ROOT; };
+		CD705C2D1A08BFC0004FCC54 /* SimpleFragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SimpleFragment.glsl; path = PhotoBall/SimpleFragment.glsl; sourceTree = SOURCE_ROOT; };
+		CD705C2F1A08C10D004FCC54 /* PhotoBallViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhotoBallViewController.h; path = PhotoBall/PhotoBallViewController.h; sourceTree = SOURCE_ROOT; };
+		CD705C301A08C10D004FCC54 /* PhotoBallViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PhotoBallViewController.m; path = PhotoBall/PhotoBallViewController.m; sourceTree = SOURCE_ROOT; };
 		CDD9102C184FD5FD000A5D6E /* OpenSans-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Light.ttf"; sourceTree = "<group>"; };
 		CDD9102D184FD5FD000A5D6E /* OpenSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Regular.ttf"; sourceTree = "<group>"; };
 		CDD9102E184FD5FD000A5D6E /* OpenSans.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OpenSans.fnt; sourceTree = "<group>"; };
 		CDD9102F184FD5FD000A5D6E /* OpenSans@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "OpenSans@2x.png"; sourceTree = "<group>"; };
-		CDD91034184FD74C000A5D6E /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		CDFB4F2D1850FCFF00C60084 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -172,13 +186,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDFB4F2F1850FD1000C60084 /* OpenGLES.framework in Frameworks */,
 				CDFB4F2E1850FCFF00C60084 /* GLKit.framework in Frameworks */,
+				CDFB4F2F1850FD1000C60084 /* OpenGLES.framework in Frameworks */,
+				CD62E11E19F999DA0071F674 /* libTestFlight.a in Frameworks */,
 				CD65A2351846745D000E9048 /* CoreMotion.framework in Frameworks */,
-				CD48826B184D907800EBDC35 /* DropboxSDK.framework in Frameworks */,
+				CD569B5C1B11474900D966EF /* FBSDKCoreKit.framework in Frameworks */,
 				CD65A2371846745D000E9048 /* QuartzCore.framework in Frameworks */,
 				CD65A20618467431000E9048 /* CoreGraphics.framework in Frameworks */,
-				CDD91035184FD74C000A5D6E /* FacebookSDK.framework in Frameworks */,
+				CD569B5E1B11474900D966EF /* FBSDKShareKit.framework in Frameworks */,
+				CD569B5D1B11474900D966EF /* FBSDKLoginKit.framework in Frameworks */,
 				CD65A20818467431000E9048 /* UIKit.framework in Frameworks */,
 				CD65A20418467431000E9048 /* Foundation.framework in Frameworks */,
 			);
@@ -188,7 +204,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD65A21D18467431000E9048 /* XCTest.framework in Frameworks */,
 				CD65A21F18467431000E9048 /* UIKit.framework in Frameworks */,
 				CD65A21E18467431000E9048 /* Foundation.framework in Frameworks */,
 			);
@@ -219,6 +234,9 @@
 		CD65A20218467431000E9048 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CD569B591B11474900D966EF /* FBSDKCoreKit.framework */,
+				CD569B5A1B11474900D966EF /* FBSDKLoginKit.framework */,
+				CD569B5B1B11474900D966EF /* FBSDKShareKit.framework */,
 				CDFB4F2D1850FCFF00C60084 /* GLKit.framework */,
 				CD65A2321846745D000E9048 /* CoreMotion.framework */,
 				CD65A2331846745D000E9048 /* OpenGLES.framework */,
@@ -226,7 +244,6 @@
 				CD65A20318467431000E9048 /* Foundation.framework */,
 				CD65A20518467431000E9048 /* CoreGraphics.framework */,
 				CD65A20718467431000E9048 /* UIKit.framework */,
-				CD65A21C18467431000E9048 /* XCTest.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -245,6 +262,10 @@
 				CD65A2751846748F000E9048 /* GalleryViewController.m */,
 				CD65A2561846748F000E9048 /* InteractiveViewController.h */,
 				CD65A2571846748F000E9048 /* InteractiveViewController.m */,
+				CD705C2F1A08C10D004FCC54 /* PhotoBallViewController.h */,
+				CD705C301A08C10D004FCC54 /* PhotoBallViewController.m */,
+				CD705C2B1A08BF91004FCC54 /* SimpleVertex.glsl */,
+				CD705C2D1A08BFC0004FCC54 /* SimpleFragment.glsl */,
 				CD65A2471846748F000E9048 /* GL1View.h */,
 				CD65A2481846748F000E9048 /* GL1View.m */,
 				CD65A2771846748F000E9048 /* MExtendedTableView.h */,
@@ -259,8 +280,8 @@
 		CD65A20A18467431000E9048 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				CDD91034184FD74C000A5D6E /* FacebookSDK.framework */,
-				CD48826A184D907800EBDC35 /* DropboxSDK.framework */,
+				CD62E11A19F999DA0071F674 /* libTestFlight.a */,
+				CD705C291A08BEE1004FCC54 /* globe.png */,
 				CDD9102C184FD5FD000A5D6E /* OpenSans-Light.ttf */,
 				CDD9102D184FD5FD000A5D6E /* OpenSans-Regular.ttf */,
 				CDD9102E184FD5FD000A5D6E /* OpenSans.fnt */,
@@ -312,10 +333,12 @@
 				CD65A2611846748F000E9048 /* PBGalleryDatabase.m */,
 				CD65A2621846748F000E9048 /* PBImage.h */,
 				CD65A2631846748F000E9048 /* PBImage.m */,
-				CD65A2671846748F000E9048 /* SliderTableViewCell.h */,
-				CD65A2681846748F000E9048 /* SliderTableViewCell.m */,
 				CD65A26E1846748F000E9048 /* Vector2.h */,
 				CD65A26F1846748F000E9048 /* Vector2.m */,
+				CD27D2B618984E23005EAC74 /* Common.h */,
+				CD27D2B718984E4E005EAC74 /* Common.m */,
+				CD62E12019FAF30D0071F674 /* SliderTableViewCell.h */,
+				CD62E12119FAF30D0071F674 /* SliderTableViewCell.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -411,7 +434,7 @@
 		CD65A1F818467431000E9048 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = "Gyrocade, LLC";
 				TargetAttributes = {
 					CD65A1FF18467431000E9048 = {
@@ -428,6 +451,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = CD65A1F718467431000E9048;
 			productRefGroup = CD65A20118467431000E9048 /* Products */;
@@ -470,11 +494,14 @@
 				CD65A2801846748F000E9048 /* ConfigGalleryViewController.xib in Resources */,
 				CD65A28F1846748F000E9048 /* cell_background_top.png in Resources */,
 				CD65A28B1846748F000E9048 /* cell_background_bottom.png in Resources */,
+				CD705C2C1A08BF91004FCC54 /* SimpleVertex.glsl in Resources */,
 				CD65A2AB1846748F000E9048 /* SVProgressHUD.bundle in Resources */,
 				CD65A2851846748F000E9048 /* ELCAssetPicker.xib in Resources */,
 				CD65A28C1846748F000E9048 /* cell_background_bottom@2x.png in Resources */,
 				CD65A2A81846748F000E9048 /* icon114@2x.png in Resources */,
+				CD705C2A1A08BEE1004FCC54 /* globe.png in Resources */,
 				CD65A28D1846748F000E9048 /* cell_background_single.png in Resources */,
+				CD705C2E1A08BFC0004FCC54 /* SimpleFragment.glsl in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -500,8 +527,10 @@
 				CD65A2A91846748F000E9048 /* MExtendedTableView.m in Sources */,
 				CD65A2AC1846748F000E9048 /* SVProgressHUD.m in Sources */,
 				CD65A2961846748F000E9048 /* EAGLView.m in Sources */,
+				CD62E12219FAF30D0071F674 /* SliderTableViewCell.m in Sources */,
 				CD65A2A71846748F000E9048 /* GalleryViewController.m in Sources */,
 				CD65A2951846748F000E9048 /* InteractiveViewController.m in Sources */,
+				CD705C311A08C10D004FCC54 /* PhotoBallViewController.m in Sources */,
 				CD65A29B1846748F000E9048 /* PBImage.m in Sources */,
 				CD65A2881846748F000E9048 /* GL1View.m in Sources */,
 				CD65A2831846748F000E9048 /* ELCAsset.m in Sources */,
@@ -509,8 +538,8 @@
 				CD65A27F1846748F000E9048 /* ConfigGalleryViewController.m in Sources */,
 				CD65A29A1846748F000E9048 /* PBGalleryDatabase.m in Sources */,
 				CD65A2991846748F000E9048 /* PBGallery.m in Sources */,
+				CD27D2B818984E4E005EAC74 /* Common.m in Sources */,
 				CD65A2841846748F000E9048 /* ELCAssetCell.m in Sources */,
-				CD65A29E1846748F000E9048 /* SliderTableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -556,7 +585,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -596,7 +624,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -634,13 +661,18 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/Darkstar/Documents/iPhone\\ Projects/Photoball/Photoball",
-					"/Users/Darkstar/Documents/iPhone\\ Projects/PhotoBall/Photoball",
+					"$(PROJECT_DIR)/Photoball",
+					"$(PROJECT_DIR)",
+					/Users/Darkstar/Documents/FacebookSDK,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Photoball/Photoball-Prefix.pch";
 				INFOPLIST_FILE = "Photoball/Photoball-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Photoball",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
@@ -655,13 +687,18 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/Darkstar/Documents/iPhone\\ Projects/Photoball/Photoball",
-					"/Users/Darkstar/Documents/iPhone\\ Projects/PhotoBall/Photoball",
+					"$(PROJECT_DIR)/Photoball",
+					"$(PROJECT_DIR)",
+					/Users/Darkstar/Documents/FacebookSDK,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Photoball/Photoball-Prefix.pch";
 				INFOPLIST_FILE = "Photoball/Photoball-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Photoball",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
@@ -671,7 +708,6 @@
 		CD65A23018467431000E9048 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Photoball.app/Photoball";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -694,7 +730,6 @@
 		CD65A23118467431000E9048 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Photoball.app/Photoball";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",

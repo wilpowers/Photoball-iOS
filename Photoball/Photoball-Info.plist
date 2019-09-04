@@ -30,12 +30,23 @@
 	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb858104037556114</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
 	<key>FacebookAppID</key>
-	<string>416040208523146</string>
+	<string>858104037556114</string>
 	<key>FacebookDisplayName</key>
 	<string>Photoball</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIAppFonts</key>
@@ -43,9 +54,11 @@
 		<string>OpenSans-Regular.ttf</string>
 		<string>OpenSans-Light.ttf</string>
 	</array>
+	<key>UIApplicationExitsOnSuspend</key>
+	<true/>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
-		<string>armv7</string>
+		<string>opengles-2</string>
 	</array>
 	<key>UIStatusBarHidden</key>
 	<true/>
@@ -53,8 +66,8 @@
 	<true/>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleDefault</string>
-	<key>UIApplicationExitsOnSuspend</key>
-	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Photoball uses your photo library in order to work.</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

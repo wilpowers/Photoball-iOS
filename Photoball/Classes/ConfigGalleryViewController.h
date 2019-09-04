@@ -5,9 +5,8 @@
 //  Created by William Powers on 1/17/13.
 //
 
-#import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
-#import <DropboxSDK/DropboxSDK.h>
+//#import <DropboxSDK/DropboxSDK.h>
 #import "SliderTableViewCell.h"
 #import "ELCAlbumPickerController.h"
 #import "AppDelegate.h"

@@ -5,8 +5,15 @@
 //  Copyright 2011 ELC Technologies. All rights reserved.
 //
 
+//#import <FacebookSDK/FacebookSDK.h>
 #import "ELCAlbumPickerController.h"
 #import "ELCAssetTablePicker.h"
+
+@interface ELCAlbumPickerController() {
+    CGFloat rowHeight;
+}
+
+@end
 
 @implementation ELCAlbumPickerController
 
@@ -27,6 +34,8 @@
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     self.view.backgroundColor = [UIColor blackColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    rowHeight = 57.f;
     
 	self.assetGroups = [[NSMutableArray alloc] init];
     
@@ -62,7 +71,9 @@
         [self.library enumerateGroupsWithTypes:ALAssetsGroupAll
                                usingBlock:assetGroupEnumerator 
                              failureBlock:assetGroupEnumberatorFailure];
-    });    
+    });
+    
+    //[self requestAlbums];
 }
 
 -(void)reloadTableView {
@@ -165,23 +176,83 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 	
-	return 57;
+	return rowHeight;
 }
 
-#pragma mark -
-#pragma mark Memory management
-
-- (void)didReceiveMemoryWarning {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
+/*
+- (void)requestAlbums
+{
     
-    // Relinquish ownership any cached data, images, etc that aren't in use.
+    // We will request the user's events
+    // These are the permissions we need:
+    NSArray *permissionsNeeded = @[@"user_photos"];
+    
+    // Request the permissions the user currently has
+    [FBRequestConnection startWithGraphPath:@"/me/permissions"
+                          completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                              if (!error){
+                                  NSDictionary *currentPermissions= [(NSArray *)[result data] objectAtIndex:0];
+                                  NSLog(@"current permissions %@", currentPermissions);
+                                  NSMutableArray *requestPermissions = [[NSMutableArray alloc] initWithArray:@[]];
+                                  
+                                  // Check if all the permissions we need are present in the user's current permissions
+                                  // If they are not present add them to the permissions to be requested
+                                  for (NSString *permission in permissionsNeeded){
+                                      if (![currentPermissions objectForKey:permission]){
+                                          [requestPermissions addObject:permission];
+                                      }
+                                  }
+                                  
+                                  // If we have permission to request
+                                  if ([requestPermissions count] > 0){
+                                      // Ask for the missing permissions
+                                      [FBSession.activeSession requestNewReadPermissions:requestPermissions
+                                                                       completionHandler:^(FBSession *session, NSError *error) {
+                                                                           if (!error) {
+                                                                               // Permission granted
+                                                                               NSLog(@"new permissions %@", [FBSession.activeSession permissions]);
+                                                                               // We can request the user information
+                                                                               [self makeRequestForUserAlbums];
+                                                                           } else {
+                                                                               // An error occurred, we need to handle the error
+                                                                               // Check out our error handling guide: https://developers.facebook.com/docs/ios/errors/
+                                                                               NSLog(@"error %@", error.description);
+                                                                           }
+                                                                       }];
+                                  } else {
+                                      // Permissions are present
+                                      // We can request the user information
+                                      [self makeRequestForUserAlbums];
+                                  }
+                                  
+                              } else {
+                                  // An error occurred, we need to handle the error
+                                  // Check out our error handling guide: https://developers.facebook.com/docs/ios/errors/
+                                  NSLog(@"error %@", error.description);
+                              }
+                          }];
 }
 
-- (void)viewDidUnload {
-    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
-    // For example: self.myOutlet = nil;
+- (void)makeRequestForUserAlbums
+{
+    [FBRequestConnection startWithGraphPath:@"me/albums"
+                          completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                              if (!error) {
+                                  // Success! Include your code to handle the results here
+                                  NSLog(@"user albums: %@", result);
+                              } else {
+                                  // An error occurred, we need to handle the error
+                                  // Check out our error handling guide: https://developers.facebook.com/docs/ios/errors/
+                                  NSLog(@"error %@", error.description);
+                              }
+                          }];
+    
+ 
+    // NSString * albumId = @"123456789";
+    // NSString * path = [NSString stringWithFormat:@"%@/photos", albumId];
+    // [facebook requestWithGraphPath:path andDelegate:self];
+ 
 }
-
+*/
 @end
 

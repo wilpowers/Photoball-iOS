@@ -10,6 +10,11 @@
 #import "ELCAsset.h"
 #import "ELCAlbumPickerController.h"
 
+@interface ELCAssetTablePicker() {
+    CGFloat rowHeight;
+}
+
+@end
 
 @implementation ELCAssetTablePicker
 
@@ -24,6 +29,8 @@
 	self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 	[self.tableView setAllowsSelection:NO];
     self.view.backgroundColor = [UIColor blackColor];
+    
+    rowHeight = 79.f;
     
     self.elcAssets = [[NSMutableArray alloc] init];
 	
@@ -49,6 +56,10 @@
     
     if (self.elcAssets.count > 0)
     {
+        // reverse the array so the most recent items appear first
+        NSArray *tempArray = [[self.elcAssets reverseObjectEnumerator] allObjects];
+        self.elcAssets = [NSMutableArray arrayWithArray:tempArray];
+        
         ELCAlbumPickerController* albumPickerController = self.parent;
         ConfigGalleryViewController* configGalleryViewController = albumPickerController.delegate;
         PBGallery *gallery = configGalleryViewController.gallery;
@@ -168,7 +179,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	return 79;
+	return rowHeight;
 }
 
 - (int)totalSelectedAssets

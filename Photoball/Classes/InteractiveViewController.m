@@ -7,8 +7,12 @@
 //
 
 #import "InteractiveViewController.h"
+#import "PhotoBallViewController.h"
 
 @interface InteractiveViewController ()
+{
+    PhotoBallViewController *photoBallVC;
+}
 
 @end
 
@@ -22,8 +26,11 @@
         self.gl1View = [[GL1View alloc] initWithFrame:frame];
         self.gl1View.parent = self;
         [self.view addSubview:self.gl1View];
+        
         self.modalPresentationStyle = UIModalPresentationCurrentContext;
         self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+        
+        
     }
     return self;
 }
@@ -40,6 +47,13 @@
     if (self.gl1View)
     {
         [_gl1View Start];
+    }
+    else
+    {
+        photoBallVC = [[PhotoBallViewController alloc] init];
+        [self presentViewController:photoBallVC animated:YES completion:^{
+            
+        }];
     }
 }
 
@@ -79,18 +93,6 @@
 - (BOOL)shouldAutorotate
 {
     return NO;
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view.
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 @end

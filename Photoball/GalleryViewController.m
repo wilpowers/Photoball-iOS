@@ -37,13 +37,6 @@
         // Show toolbar
         self.navigationController.toolbar.barStyle = UIBarStyleBlack;
         
-        /*
-         UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc]
-         initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
-         target:nil
-         action:nil];
-         */
-        
         UIBarButtonItem *item1 = [[UIBarButtonItem alloc]
                                   initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                   target:self
@@ -69,14 +62,6 @@
     self.navigationController.toolbarHidden = NO;
     self.navigationController.toolbar.barStyle = UIBarStyleBlack;
     [self.tableView reloadData];
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-
-	// Do any additional setup after loading the view.
 }
 
 
